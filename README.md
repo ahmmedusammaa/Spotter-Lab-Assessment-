@@ -26,13 +26,7 @@ after the last training date) and the final model is a robust blend of gradient 
 Python 3.10+. Dependencies are only `matplotlib`, `numpy` and `pandas` (no scikit-learn). The notebook additionally needs `pip install jupyter`.
 
 ```bash
-python -m pip install -r requirements.txt
-
-# data/ must contain: train_test.csv, validation.csv,
-#                     validation_predictions_template.csv, december_chart_inputs.csv
-python run_pipeline.py --data-dir data
-
-python score.py --predictions validation_predictions.csv --december-predictions data/december_chart_inputs.csv
+  Run the NoteBook
 ```
 
 `run_pipeline.py` takes about 3–4 minutes (pure-numpy boosting). It has no randomness, so the outputs are reproducible.
