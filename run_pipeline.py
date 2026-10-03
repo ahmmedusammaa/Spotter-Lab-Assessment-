@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent))
 import freight as fr  # noqa: E402
 
 TEAL = "#064A56"
@@ -198,7 +199,8 @@ def main() -> None:
 
     D = fr.fill(fr.prep(fr.build_december_features(dec, tr, va), cats), T, "grouped_median")
     dec_out = dec.copy(); dec_out["predicted_rate"] = model.predict(D).round(2)
-    dec_path = Path(args.december_out or Path(args.data_dir) / "december_chart_inputs.csv")
+    dec_file = "december-chart-inputs.csv" if (Path(args.data_dir) / "december-chart-inputs.csv").exists() else "december_chart_inputs.csv"
+    dec_path = Path(args.december_out or Path(args.data_dir) / dec_file)
     dec_out.to_csv(dec_path, index=False)
 
     results["final"] = {

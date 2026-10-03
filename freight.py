@@ -18,13 +18,33 @@ FEATURES = [
 
 
 # --------------------------------------------------------------------------- data
+def _find_file(d: Path, names: list[str]) -> Path:
+    for name in names:
+        p = d / name
+        if p.exists():
+            return p
+    return d / names[0]
+
+
 def load_data(data_dir: str | Path):
     """Read the four challenge files from data_dir."""
     d = Path(data_dir)
-    train = pd.read_csv(d / "train_test.csv", parse_dates=["date"])
-    valid = pd.read_csv(d / "validation.csv", parse_dates=["date"])
-    template = pd.read_csv(d / "validation_predictions_template.csv")
-    december = pd.read_csv(d / "december_chart_inputs.csv")
+    train_path = _find_file(d, ["train-test.csv", "train_test.csv"])
+    valid_path = _find_file(d, ["validation.csv"])
+    december_path = _find_file(d, ["december-chart-inputs.csv", "december_chart_inputs.csv"])
+    template_path = _find_file(d, ["validation-predictions-template.csv", "validation_predictions_template.csv"])
+
+    train = pd.read_csv(train_path, parse_dates=["date"])
+    valid = pd.read_csv(valid_path, parse_dates=["date"])
+    december = pd.read_csv(december_path)
+
+    if template_path.exists():
+        template = pd.read_csv(template_path)
+        if "load_id" not in template.columns or len(template) != len(valid):
+            template = pd.DataFrame({"load_id": valid["load_id"]})
+    else:
+        template = pd.DataFrame({"load_id": valid["load_id"]})
+
     return train, valid, template, december
 
 
